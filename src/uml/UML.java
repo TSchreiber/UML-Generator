@@ -25,7 +25,8 @@ public class UML {
             String s = "";
             int mod = instanceVariables[i].getModifiers();
             s += Modifier.isPublic(mod) ? "+" :
-                 Modifier.isPrivate(mod) ? "-" : " ";
+                 Modifier.isPrivate(mod) ? "-" : 
+                 Modifier.isProtected(mod) ? "#" : "~";
             s += instanceVariables[i].getName();
             s += ": ";
             s += simplify(instanceVariables[i].getType());
@@ -37,7 +38,9 @@ public class UML {
     private Field[] getInstanceVariables() {
         ArrayList<Field> arr = new ArrayList<Field>();
         for (Field field : C.getDeclaredFields()) {
-            if (!Modifier.isFinal(field.getModifiers()))
+            // Don't include class constants (static final)
+            if (!Modifier.isFinal(field.getModifiers())
+             && !Modifier.isStatic(field.getModifiers()))
                 arr.add(field);
         }
         return arr.toArray(new Field[arr.size()]);
